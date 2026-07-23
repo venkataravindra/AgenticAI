@@ -1,0 +1,55 @@
+1)how to build rest API's
+2)Test Rest API's
+3)Fast API connection with mysql
+4)CRUD Application
+5)Deploy Application to EC2 (AWS)
+
+FastAPI - Build Rest API's by using Python
+
+
+
+
+
+
+5)Agentic AI (Complete task without human being )
+
+
+step1.
+create database in mysql
+mysql -u root -p 
+password : give the password
+create database emp_db
+use emp_db
+
+step2.
+1)FastAPI                          #used to develop rest apis
+2)uvicorn [standard]               #this server, used to run api calls
+3)sqlalchemy                       #python  ---> talk ---> mysql
+4) pymysql
+5)cryptography                     #used to connect with mysql database
+6)bcrypt                           # used to hash the password
+7)pyjwt                            #used to generate token
+8)pydantic                          #validate the emails
+
+step3:
+install libraries
+
+> python -m venv venv (create virtual environment)
+>.\\venv\Scripts\activate
+>pip install -r requirements.txt or python -m pip install -r requirements.txt
+
+step4.
+
+create database connection
+database.py
+
+step5:
+create tables(models)
+models.py
+
+step6:
+define schema (rules & regulations)
+schema.py
+username:string
+password:string
+id: integer
