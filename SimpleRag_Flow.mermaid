@@ -1,0 +1,23 @@
+flowchart TD
+    subgraph P1["PHASE 1: INGESTION  (ingest.py — run once)"]
+        A1["PDF files in /data\n(python_sample_notes.pdf)"] -->|"pdf_loader.py\nPyPDFLoader"| A2["Documents\n(1 per page)"]
+        A2 -->|"text_spiltter.py\nRecursiveCharacterTextSplitter\nchunk_size=500, overlap=100"| A3["Text Chunks"]
+        A3 -->|"embedding_model.py\nHuggingFace all-MiniLM-L6-v2"| A4["Chunk Embeddings\n(vectors)"]
+        A4 -->|"vector_db.py\ncreate_vector_db()"| A5[("Chroma Vector DB\n/vector_store/chroma_db")]
+    end
+
+    subgraph P2["PHASE 2: QUERY  (app.py — run every time)"]
+        B1["User Question"] -->|"embed with same\nMiniLM model"| B2["Question Embedding"]
+        A5 -.->|"load_vector_db()"| B3
+        B2 --> B3["retriever.py\nsimilarity search, k=3"]
+        B3 --> B4["Top-3 Relevant Chunks"]
+        B4 -->|"join with \\n\\n"| B5["Context String"]
+        B5 --> B6["rag_prompt.py\nPromptTemplate\n(context + question)"]
+        B1 --> B6
+        B6 -->|"strict instruction:\nanswer ONLY from context"| B7["llm.py\nChatOpenAI gpt-4.1-mini\ntemperature=0"]
+        B7 --> B8["Final Answer\nprinted to console"]
+    end
+
+    style A5 fill:#ffe9b3,stroke:#333,stroke-width:2px
+    style B7 fill:#c9e7ff,stroke:#333,stroke-width:2px
+    style B8 fill:#c9ffd6,stroke:#333,stroke-width:2px
