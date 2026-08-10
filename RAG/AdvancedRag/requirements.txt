@@ -1,0 +1,15 @@
+fastapi # develop api calls, GET, POST, PUT,......
+uvicorn # web server and runs fast api's
+python-multipart # required when fast-api receives the files like pdf, txt
+pypdf # read and extract text from pdf's
+chromadb # vector database, stores documents, embeddings, chunks
+sentence-transformers # create embeddings
+langchain # frameworks, connects different components of ai application
+langchain-community # community-maintained integrations for different tools and data source
+langchain-chroma # langchain integration with chromadb
+langchain-huggingface # langchain integration with embedding models
+langchain-text-splitters # text-splitting
+langchain-anthropic # langchain integration with claude AI
+python-dotenv # reads data from .env file
+faiss-cpu # vector database, stores documents, embeddings, chunks (CPU version)
+# faiss-gpu # use this instead if you have GPU
