@@ -329,11 +329,181 @@ class AgenticRAG:
         
         return final_response
 
+```python
+# Continuing Agentic RAG Example
+
 class PlanningAgent:
     def create_plan(self, query: str) -> QueryPlan:
         # Analyze query complexity and requirements
         complexity = self.analyze_complexity(query)
         domain = self.detect_domain(query)
+        intent = self.classify_intent(query)
+        
+        # Create execution plan
+        plan = QueryPlan(
+            retrieval_strategy=self.select_retrieval_agents(complexity, domain),
+            generation_strategy=self.select_generation_agents(intent, complexity),
+            validation_strategy=self.select_validation_agents(domain, intent),
+            execution_order=self.determine_execution_order(complexity),
+            fallback_strategies=self.create_fallback_plans(query)
+        )
+        
+        return plan
+    
+    def select_retrieval_agents(self, complexity: str, domain: str) -> List[str]:
+        """Select appropriate retrieval agents based on query characteristics"""
+        agents = ['vector']  # Always include vector search
+        
+        if complexity == 'high':
+            agents.extend(['graph', 'web'])
+        
+        if domain in ['technical', 'scientific']:
+            agents.append('database')
+        
+        if domain == 'current_events':
+            agents.append('web')
+            
+        return agents
+    
+    def select_generation_agents(self, intent: str, complexity: str) -> List[str]:
+        """Select generation agents based on intent and complexity"""
+        if intent == 'summarization':
+            return ['summarizer']
+        elif intent == 'analysis':
+            return ['analyst', 'qa']
+        elif complexity == 'high':
+            return ['qa', 'analyst', 'summarizer']
+        else:
+            return ['qa']
+
+class QueryPlan:
+    def __init__(self, retrieval_strategy, generation_strategy, 
+                 validation_strategy, execution_order, fallback_strategies):
+        self.retrieval_strategy = retrieval_strategy
+        self.generation_strategy = generation_strategy
+        self.validation_strategy = validation_strategy
+        self.execution_order = execution_order
+        self.fallback_strategies = fallback_strategies
+        self.confidence_threshold = 0.8
+        self.max_iterations = 3
+```
+
+---
+
+## 🚀 **Use Case Recommendations**
+
+| **RAG Type** | **Best For** | **Avoid When** | **Example Applications** |
+|--------------|--------------|----------------|-------------------------|
+| **Naive RAG** | • Simple Q&A<br>• Prototyping<br>• Low-stakes applications<br>• Limited resources | • High accuracy needs<br>• Complex queries<br>• Production systems<br>• Critical decisions | • Internal FAQs<br>• Basic chatbots<br>• Documentation lookup |
+| **Advanced RAG** | • Production systems<br>• Better accuracy needs<br>• Structured documents<br>• Multi-modal content | • Simple use cases<br>• Very limited resources<br>• Real-time constraints | • Customer support<br>• Knowledge management<br>• Content recommendation |
+| **Modular RAG** | • Complex workflows<br>• Multiple data sources<br>• Customization needs<br>• Scalable systems | • Simple requirements<br>• Quick prototypes<br>• Limited dev resources | • Enterprise search<br>• Multi-domain systems<br>• Research platforms |
+| **Corrective RAG** | • High accuracy critical<br>• Error-sensitive domains<br>• Fact verification needs<br>• Quality over speed | • Real-time applications<br>• Cost-sensitive projects<br>• Simple queries | • Medical information<br>• Legal research<br>• Financial analysis |
+| **Self RAG** | • Autonomous systems<br>• Adaptive behavior<br>• Learning from mistakes<br>• Quality improvement | • Predictable workflows<br>• Strict latency requirements<br>• Simple use cases | • Research assistants<br>• Educational tutors<br>• Content creation |
+| **Agentic RAG** | • Complex problem solving<br>• Multi-step reasoning<br>• Collaborative tasks<br>• Expert-level analysis | • Simple queries<br>• Resource constraints<br>• Fast response needs | • Scientific research<br>• Strategic planning<br>• Complex analysis |
+
+---
+
+## 📈 **Performance Metrics Comparison**
+
+| **Metric** | **Naive RAG** | **Advanced RAG** | **Modular RAG** | **Corrective RAG** | **Self RAG** | **Agentic RAG** |
+|------------|---------------|------------------|-----------------|-------------------|--------------|-----------------|
+| **Accuracy** | 60-70% | 75-85% | 80-90% | 85-95% | 85-95% | 90-98% |
+| **Latency** | 100-500ms | 500ms-2s | 1-5s | 2-10s | 3-15s | 5-30s |
+| **Cost per Query** | $0.001-0.01 | $0.01-0.05 | $0.02-0.10 | $0.05-0.20 | $0.10-0.30 | $0.20-1.00 |
+| **Hallucination Rate** | 20-30% | 10-20% | 5-15% | 2-8% | 2-8% | 1-5% |
+| **Context Relevance** | 60-70% | 75-85% | 80-90% | 85-95% | 85-95% | 90-98% |
+| **Scalability** | Excellent | Good | Very Good | Moderate | Moderate | Good |
+| **Maintenance Effort** | Low | Medium | High | Medium | High | Very High |
+
+---
+
+## 🔧 **Implementation Complexity**
+
+### **Development Time Estimates**
+
+| **RAG Type** | **Setup Time** | **Development Time** | **Testing Time** | **Maintenance** |
+|--------------|----------------|---------------------|------------------|-----------------|
+| **Naive RAG** | 1-2 days | 1-2 weeks | 1 week | Low |
+| **Advanced RAG** | 3-5 days | 3-6 weeks | 2-3 weeks | Medium |
+| **Modular RAG** | 1-2 weeks | 6-12 weeks | 4-6 weeks | High |
+| **Corrective RAG** | 1 week | 4-8 weeks | 3-4 weeks | Medium |
+| **Self RAG** | 1-2 weeks | 8-16 weeks | 4-8 weeks | High |
+| **Agentic RAG** | 2-4 weeks | 12-24 weeks | 6-12 weeks | Very High |
+
+### **Technical Requirements**
+
+| **RAG Type** | **Infrastructure** | **ML Expertise** | **Data Requirements** | **Monitoring Needs** |
+|--------------|-------------------|------------------|----------------------|---------------------|
+| **Naive RAG** | Basic (CPU/GPU) | Beginner | Clean text data | Basic logging |
+| **Advanced RAG** | Moderate (GPU) | Intermediate | Structured data + metadata | Performance monitoring |
+| **Modular RAG** | High (Multi-GPU) | Advanced | Multi-modal data | Component monitoring |
+| **Corrective RAG** | High (GPU cluster) | Advanced | High-quality labeled data | Quality monitoring |
+| **Self RAG** | High (GPU cluster) | Expert | Feedback data | Self-monitoring |
+| **Agentic RAG** | Very High (Distributed) | Expert | Multi-source data | Agent coordination monitoring |
+
+---
+
+## 🎯 **Decision Framework**
+
+### **Choose Based On:**
+
+#### **🚀 Naive RAG If:**
+- Quick prototype needed
+- Simple Q&A use case
+- Limited budget/resources
+- Low accuracy requirements
+- Internal/non-critical use
+
+#### **⚡ Advanced RAG If:**
+- Production system
+- Better accuracy needed
+- Moderate complexity
+- Standard enterprise use
+- Balanced cost/performance
+
+#### **🧩 Modular RAG If:**
+- Multiple data sources
+- Complex workflows
+- Customization critical
+- Long-term scalability
+- Enterprise architecture
+
+#### **🔍 Corrective RAG If:**
+- Accuracy is critical
+- Error cost is high
+- Fact verification needed
+- Quality over speed
+- Regulated domains
+
+#### **🤔 Self RAG If:**
+- Autonomous operation
+- Continuous improvement
+- Adaptive behavior
+- Learning from feedback
+- Research applications
+
+#### **🤖 Agentic RAG If:**
+- Complex problem solving
+- Multi-step reasoning
+- Expert-level analysis
+- Collaborative tasks
+- Cutting-edge applications
+
+---
+
+## 📋 **Quick Selection Checklist**
+
+| **Question** | **Naive** | **Advanced** | **Modular** | **Corrective** | **Self** | **Agentic** |
+|--------------|-----------|--------------|-------------|----------------|----------|-------------|
+| Need 90%+ accuracy? | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Sub-second response? | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Limited budget? | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Complex reasoning? | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Multiple data sources? | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Self-improvement? | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Multi-agent coordination? | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+
+This comprehensive comparison should help you choose the right RAG approach based on your specific requirements, constraints, and use case complexity.
         intent = self.classify_intent(query)
         
         # Create execution plan
