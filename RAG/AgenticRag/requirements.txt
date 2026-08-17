@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+python-multipart
+python-dotenv
+pypdf
+chromadb
+sentence-transformers
+langchain
+langchain-community
+langchain-chroma
+langchain-anthropic
+langchain-huggingface # models

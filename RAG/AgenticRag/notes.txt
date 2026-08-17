@@ -1,0 +1,131 @@
+Step 1.
+    create directory
+    Ex.
+        agent
+
+Step 2.
+    create and activate virtual environment
+        > python -m venv venv
+        > source venv/bin/activate (mac)
+        > venv\Scripts\activate (windows)
+
+Step 3.
+    download dependencies
+        requirements.txt
+
+        python -m pip install -r requirements.txt
+
+
+Step 4.
+    create .env file
+
+Step 5.
+    create main.py
+
+Step 6.
+    upload company.pdf
+
+Step 7.
+    create Dockerfile
+
+Step 8.
+    create Jenkinsfile
+
+Step 9.
+    push code to github
+
+    .gitignore
+
+    url : https://github.com/venkataravindra/agentic-rag.git
+
+    > git init
+    > git config --global user.name "VPro"
+    > git config --global user.email "samba.pendela@vproskills.com"
+    > git add .
+    > git commit -m "rag ready for deployment"
+    > git remote add origin https://github.com/venkataravindra/agentic-rag.git
+    > git push -u origin main
+
+Step 10.
+        update Jenkinsfile (https://github.com/venkataravindra/agentic-rag.git)
+        > git add .
+        > git commit -m "jenkind file updated"
+        > git push -u origin main
+
+Step 11.
+        create EC2
+            name : vpro-ws
+            OS : Ubuntu
+            t3.medium
+            > 20GB
+
+Step 12.
+        open below ports
+        1) 8000 (Docker)
+        2) 8080 (Jenkins)
+        3) 5173
+        4) 4200
+
+Step 13.
+    connect to EC2
+
+Step 14.
+        install required softwares in EC2
+        1) git
+        2) python
+        3) java (Jenkins installation depending on java)
+        4) jenkins
+        5) docker
+        6) enable permission (Ubuntu and jenkins) (Ubuntu and docker) (docker and jenkins)
+
+        > sudo apt update -y
+
+        > sudo apt install git -y
+        > git -version (or) sudo git -v
+
+        sudo apt install -y python3 python3-pip python3-venv
+        python3 --version
+
+        https://www.jenkins.io/doc/book/installing/ (jenkins installation)
+
+
+        > sudo apt install docker.io -y 
+        > docker --version
+
+
+        > sudo usermod -aG docker ubuntu
+        > sudo usermod -aG jenkins ubuntu
+        > sudo usermod -aG  docker jenkins
+
+        > sudo systemctl restart jenkins
+        > sudo systemctl restart docker
+
+Step 15.
+        create directory in EC2 (folder)
+        > sudo mkdir -p /opt/agentic-rag
+        > sudo chown ubuntu:ubuntu /opt/agentic-rag
+
+Step 16.
+        generate jenkins password
+        sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+        a3caa5b95431434aaed4ce77e23cd2bf
+
+
+Step 17.
+        connect to Jenkins
+        http://13.126.195.3:8080/
+
+Step 18.
+        set llm in jenkins
+
+        anthropic-api-key = xxxxxxxxxxxxxxxxx
+
+Step 19.
+        create pipeline
+
+Step 20.
+            sudo usermod -aG docker ubuntu
+            
+Step 21.
+            http://IPADDRESS:8000/docs
