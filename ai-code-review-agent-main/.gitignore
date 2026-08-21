@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Env files (never commit real secrets)
+.env
+!.env.example
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# App data
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/chroma_db/*
+!backend/chroma_db/.gitkeep
+
+# OS
+.DS_Store
