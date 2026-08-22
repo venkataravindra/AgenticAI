@@ -50,10 +50,16 @@ async def save_uploaded_files(files: list[UploadFile]) -> dict:
 
 
 def list_uploaded_files(upload_id: str) -> list[str]:
+    """Recursive so it also covers repo clones staged under nested paths
+    (e.g. 'src/main.py'); flat direct uploads are unaffected."""
     upload_path = UPLOAD_DIR / upload_id
     if not upload_path.exists():
         raise FileNotFoundError(f"Upload '{upload_id}' not found.")
-    return sorted(p.name for p in upload_path.iterdir() if p.is_file())
+    return sorted(
+        p.relative_to(upload_path).as_posix()
+        for p in upload_path.rglob("*")
+        if p.is_file()
+    )
 
 
 def read_uploaded_file(upload_id: str, filename: str) -> str:

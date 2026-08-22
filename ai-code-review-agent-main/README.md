@@ -174,6 +174,7 @@ backend calls out to both.
 | Method | Path | Purpose |
 |---|---|---|
 | POST | `/api/files/upload` | Upload one or more code files (multipart `files[]`) |
+| POST | `/api/files/from-url` | Clone a public GitHub/Bitbucket repo and stage its source files (same response shape as `/upload`) |
 | GET | `/api/files/{upload_id}` | List files stored under an upload |
 | POST | `/api/review` | Run the LangGraph review workflow on selected files |
 | GET | `/api/review/{review_id}` | Re-fetch a past review result |
@@ -221,11 +222,11 @@ Code-Review-Agent/
 │       ├── rag/           # documents/, ingest.py, vector_store.py, retriever.py
 │       ├── mcp/           # client.py (MCP client)
 │       ├── config/        # client.py (Config Server client)
-│       ├── services/      # file_service.py, review_service.py
+│       ├── services/      # file_service.py, review_service.py, repo_service.py
 │       └── models/        # review.py (Pydantic schemas)
 └── frontend/
     └── src/
-        ├── components/    # FileUpload, ReviewOptions, ReviewResult
+        ├── components/    # FileUpload, RepoUrlInput, ReviewOptions, ReviewResult
         └── services/      # api.js
 ```
 
@@ -256,3 +257,66 @@ multi-agent orchestration, advanced/agentic RAG, and reranking are all
 intentionally excluded — this project is scoped to teach the core
 integration of a single agent + LangGraph + LangChain + RAG + MCP + a
 Config Server, end to end, without extra moving parts.
+
+---
+
+## 12. Reviewing a GitHub/Bitbucket repo by URL
+
+In addition to uploading files, you can point the app at a public repo URL
+and it clones the code server-side and reviews it through the exact same
+pipeline as an upload. This section documents what was added, file by file.
+
+### What it does
+
+1. Frontend: a source toggle ("Upload Files" / "Repository URL") appears
+   above the upload card. In URL mode you provide a `github.com` or
+   `bitbucket.org` URL and an optional branch.
+2. Backend clones the repo (`git clone --depth 1`) into a temp directory,
+   filters it down to source files matching the same allowed extensions and
+   per-file size limit as direct uploads, caps the file count (default 30,
+   `REPO_MAX_FILES`), and copies the survivors into
+   `backend/uploads/{upload_id}/` — preserving their original relative paths
+   (e.g. `src/requests/auth.py`).
+3. From that point on it's indistinguishable from an upload: the frontend
+   calls the same `POST /api/review` with the returned `upload_id` /
+   `files`, and the LangGraph workflow, RAG, MCP tools, and LLM review run
+   unchanged.
+
+### Files added
+
+| File | Purpose |
+|---|---|
+| `backend/app/services/repo_service.py` | New. Validates the URL, runs `git clone`, filters/stages files, cleans up the temp clone (with a Windows-safe handler for git's read-only files). |
+| `frontend/src/components/RepoUrlInput.jsx` | New. Repo URL + branch input fields, styled like the existing upload card. |
+
+### Files changed
+
+| File | Change |
+|---|---|
+| `backend/app/api/files.py` | Added `POST /api/files/from-url` (`RepoUrlRequest` body: `repo_url`, optional `branch`), returning the same `{upload_id, files}` shape as `/upload`. Maps `RepoFetchError` → HTTP 400. |
+| `backend/app/services/file_service.py` | `list_uploaded_files` now recurses (`rglob`) and returns posix-style relative paths, so nested repo directories list correctly. Flat direct uploads are unaffected — same output as before. |
+| `backend/Dockerfile` | Installs `git` (required at runtime to clone repos). |
+| `backend/.env.example` | Documents `REPO_MAX_FILES` (default 30) and `REPO_CLONE_TIMEOUT_SECONDS` (default 30). |
+| `frontend/src/services/api.js` | Added `fetchRepoFromUrl(repoUrl, branch)`, POSTing to `/api/files/from-url`. |
+| `frontend/src/components/Icons.jsx` | Added `LinkIcon` for the source toggle. |
+| `frontend/src/App.jsx` | Added `sourceMode` state and the toggle UI; `handleReviewClick` now calls `fetchRepoFromUrl()` instead of `uploadFiles()` when in URL mode, then proceeds through the same `requestReview()` call as before. `FileUpload.jsx` itself was **not** modified. |
+| `frontend/src/App.css` | Added styles for the toggle and the new text inputs. |
+
+### Safety constraints (intentional, not configurable via the UI)
+
+- **Host allowlist**: only `github.com` and `bitbucket.org` (+ `www.` variants) are accepted — any other host is rejected before cloning. This closes off SSRF via arbitrary hosts.
+- **Scheme**: only `http://`/`https://` — blocks `file://`, `ext::`, and similar git protocol tricks.
+- **No embedded credentials**: `https://user:pass@host/...` URLs are rejected outright.
+- **No shell involved**: the clone runs via `subprocess.run([...])` with an argument list, never `shell=True`.
+- **Bounded blast radius**: `--depth 1` clone, a clone timeout (`REPO_CLONE_TIMEOUT_SECONDS`), a per-file size cap (same `MAX_UPLOAD_SIZE_MB` as uploads), and a max file count (`REPO_MAX_FILES`) so a huge repo can't balloon the review or the LLM prompt. Vendor/build directories (`node_modules`, `.git`, `venv`, `dist`, etc.) are skipped.
+- Private repositories aren't supported (there's no auth flow) — cloning one fails fast with a clear error instead of hanging, since `GIT_TERMINAL_PROMPT=0` is set.
+
+### New failure modes to know about
+
+- `"Only http:// or https:// repository URLs are supported."` — bad scheme.
+- `"Unsupported host '...'. Only GitHub and Bitbucket URLs are supported."` — host not on the allowlist.
+- `"Repository URLs with embedded credentials are not supported."` — URL contains `user:pass@`.
+- `"Could not clone repository: ..."` — git itself failed (repo doesn't exist, is private, bad branch name, etc.); the message includes git's last stderr line.
+- `"Cloning the repository timed out."` — exceeded `REPO_CLONE_TIMEOUT_SECONDS`.
+- `"No reviewable source files found in this repository."` — repo has no files matching the allowed extensions.
+- `"git is not installed on the server."` — the host running the backend doesn't have `git` on PATH (the Docker image now installs it; a local/non-Docker run needs it installed manually).

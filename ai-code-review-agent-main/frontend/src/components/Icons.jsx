@@ -48,6 +48,14 @@ export const ToolIcon = (props) => (
   </svg>
 );
 
+export const LinkIcon = (props) => (
+  <svg {...base} {...props}>
+    <path d="M9 15 15 9" />
+    <path d="M11 6 12.4 4.6a4 4 0 1 1 5.7 5.7L16.7 11.7" />
+    <path d="M13 18 11.6 19.4a4 4 0 1 1-5.7-5.7L7.3 12.3" />
+  </svg>
+);
+
 export const AlertIcon = (props) => (
   <svg {...base} {...props}>
     <path d="M12 9v4M12 17h.01" />

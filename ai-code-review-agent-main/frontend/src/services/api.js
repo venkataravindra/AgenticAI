@@ -30,6 +30,19 @@ export async function uploadFiles(files) {
   return response.json();
 }
 
+export async function fetchRepoFromUrl(repoUrl, branch) {
+  const response = await fetch(`${BACKEND_URL}/api/files/from-url`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ repo_url: repoUrl, branch: branch || null }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response, "Fetching repository failed."));
+  }
+  return response.json();
+}
+
 export async function requestReview(uploadId, fileNames, reviewFocus) {
   const response = await fetch(`${BACKEND_URL}/api/review`, {
     method: "POST",

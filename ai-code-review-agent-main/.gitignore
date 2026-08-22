@@ -3,7 +3,7 @@ __pycache__/
 *.pyc
 .venv/
 venv/
-
+.claude/
 # Env files (never commit real secrets)
 .env
 !.env.example
