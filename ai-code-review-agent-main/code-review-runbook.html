@@ -1,0 +1,777 @@
+<title>Code Review Runbook</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #171b26;
+    --ink-soft: #545d6e;
+    --ink-faint: #8b93a1;
+    --line: #dfe2e8;
+    --accent: #f2760e;
+    --accent-ink: #8a3d06;
+    --accent-tint: #fdecdd;
+    --sev-high: #c1381f;
+    --sev-high-bg: #fbe9e5;
+    --sev-med: #b96b00;
+    --sev-med-bg: #fdf1e2;
+    --sev-low: #1f9d55;
+    --sev-low-bg: #e7f7ee;
+    --console-bg: #0b0e14;
+    --console-ink: #d9e1ec;
+    --console-soft: #7c8698;
+    --console-accent: #ffa352;
+    --console-string: #8fd6a6;
+    --console-line: #1e232d;
+    --shadow: 0 1px 2px rgba(23, 27, 38, 0.04), 0 8px 24px rgba(23, 27, 38, 0.05);
+    --font-display: "IBM Plex Sans", "Segoe UI", sans-serif;
+    --font-body: "IBM Plex Sans", "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1015;
+      --surface: #161922;
+      --surface-raised: #1b1f29;
+      --ink: #e9ecf2;
+      --ink-soft: #9aa3b2;
+      --ink-faint: #6b7282;
+      --line: #2a2e38;
+      --accent: #ff9433;
+      --accent-ink: #ffd4a3;
+      --accent-tint: rgba(242, 118, 14, 0.16);
+      --sev-high: #ff6b52;
+      --sev-high-bg: rgba(193, 56, 31, 0.18);
+      --sev-med: #f0a63e;
+      --sev-med-bg: rgba(185, 107, 0, 0.18);
+      --sev-low: #4ad080;
+      --sev-low-bg: rgba(31, 157, 85, 0.16);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0e1015;
+    --surface: #161922;
+    --surface-raised: #1b1f29;
+    --ink: #e9ecf2;
+    --ink-soft: #9aa3b2;
+    --ink-faint: #6b7282;
+    --line: #2a2e38;
+    --accent: #ff9433;
+    --accent-ink: #ffd4a3;
+    --accent-tint: rgba(242, 118, 14, 0.16);
+    --sev-high: #ff6b52;
+    --sev-high-bg: rgba(193, 56, 31, 0.18);
+    --sev-med: #f0a63e;
+    --sev-med-bg: rgba(185, 107, 0, 0.18);
+    --sev-low: #4ad080;
+    --sev-low-bg: rgba(31, 157, 85, 0.16);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 56px 28px 96px;
+  }
+
+  .prose {
+    max-width: 680px;
+  }
+
+  /* ---------- Masthead ---------- */
+
+  .masthead {
+    max-width: 680px;
+    margin-bottom: 56px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    background: var(--accent-tint);
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+
+  .masthead p {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    margin: 0 0 22px;
+    text-wrap: balance;
+  }
+
+  .stack-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .stack-chips li {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    background: var(--surface);
+  }
+
+  /* ---------- Sections ---------- */
+
+  section {
+    margin-bottom: 64px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .step-tag {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .section-dek {
+    max-width: 640px;
+    color: var(--ink-soft);
+    margin: 10px 0 26px;
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin: 0 0 10px;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 0 0 64px;
+  }
+
+  /* ---------- Diagram card ---------- */
+
+  .diagram-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px 24px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+    overflow-x: auto;
+  }
+
+  .diagram-card svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 720px;
+    margin: 0 auto;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+  }
+
+  .diagram-card svg .node-label {
+    fill: var(--ink);
+    font-weight: 600;
+  }
+
+  .diagram-card svg .node-sub {
+    fill: var(--ink-faint);
+    font-weight: 400;
+  }
+
+  .diagram-card svg .accent-stroke {
+    stroke: var(--accent);
+    color: var(--accent);
+  }
+
+  .diagram-card svg .accent-fill {
+    fill: var(--accent-tint);
+    stroke: var(--accent);
+  }
+
+  .diagram-card svg .accent-text {
+    fill: var(--accent-ink);
+    font-weight: 700;
+  }
+
+  figcaption {
+    font-size: 0.88rem;
+    color: var(--ink-faint);
+    max-width: 640px;
+    margin: 0 0 8px;
+  }
+
+  figure { margin: 0 0 34px; }
+
+  /* ---------- Console panels ---------- */
+
+  .console {
+    background: var(--console-bg);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin: 0 0 20px;
+  }
+
+  .console-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--console-line);
+  }
+
+  .console-bar span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--console-line);
+  }
+
+  .console-bar .label {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--console-soft);
+    margin-left: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  .console pre {
+    margin: 0;
+    padding: 16px 18px 20px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    line-height: 1.65;
+    color: var(--console-ink);
+  }
+
+  .console pre code { color: inherit; }
+  .c-cmd::before { content: "$ "; color: var(--console-soft); }
+  .c-comment { color: var(--console-soft); }
+  .c-string { color: var(--console-string); }
+  .c-key { color: var(--console-accent); }
+  .c-out { color: var(--console-ink); }
+
+  /* ---------- Trace annotation list ---------- */
+
+  .trace-list {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .trace-list li {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .trace-num {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+  }
+
+  .trace-list strong {
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .trace-list span {
+    color: var(--ink-soft);
+    font-size: 0.94rem;
+  }
+
+  /* ---------- Issues table (callback to the app's own UI) ---------- */
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin: 0 0 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--bg);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  .chip {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+  }
+
+  .sev-high { background: var(--sev-high-bg); color: var(--sev-high); }
+  .sev-medium { background: var(--sev-med-bg); color: var(--sev-med); }
+  .sev-low { background: var(--sev-low-bg); color: var(--sev-low); }
+
+  .mono-cell { font-family: var(--font-mono); font-size: 0.85rem; white-space: nowrap; }
+
+  /* ---------- Callout ---------- */
+
+  .callout {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 18px;
+    background: var(--surface);
+    margin: 0 0 24px;
+  }
+
+  .callout p { margin: 0 0 8px; color: var(--ink-soft); font-size: 0.94rem; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout strong { color: var(--ink); }
+
+  /* ---------- Port / service grid ---------- */
+
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin: 0 0 28px;
+  }
+
+  .service-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: var(--surface);
+  }
+
+  .service-card .port {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .service-card .name {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .service-card .desc {
+    font-size: 0.86rem;
+    color: var(--ink-soft);
+  }
+
+  ul.plain { margin: 0 0 20px; padding-left: 20px; color: var(--ink-soft); }
+  ul.plain li { margin-bottom: 6px; }
+  ul.plain code, p code { font-family: var(--font-mono); font-size: 0.88em; background: var(--accent-tint); color: var(--accent-ink); padding: 1px 5px; border-radius: 4px; }
+
+  footer {
+    max-width: 680px;
+    color: var(--ink-faint);
+    font-size: 0.86rem;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+  }
+
+  @media (max-width: 560px) {
+    .page { padding: 36px 18px 72px; }
+    .trace-list li { grid-template-columns: 24px 1fr; }
+  }
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<div class="page">
+
+  <div class="masthead">
+    <span class="eyebrow">Execution Runbook</span>
+    <h1>AI Code Review Agent — how a request actually runs</h1>
+    <p>Four independent services turn an uploaded file, or a public GitHub / Bitbucket URL, into a structured, LLM-backed review. This is a trace of that execution, captured from a real run of this build — not a mockup.</p>
+    <ul class="stack-chips">
+      <li>FastAPI</li><li>LangGraph</li><li>LangChain</li><li>ChromaDB</li><li>MCP</li><li>React + Vite</li><li>OpenAI gpt-4o-mini</li>
+    </ul>
+  </div>
+
+  <!-- ============ SECTION: TOPOLOGY ============ -->
+  <section>
+    <div class="section-head"><h2>Service topology</h2></div>
+    <p class="section-dek">Each service owns one job and runs on its own port. The backend is the only one that talks to all three of the others.</p>
+
+    <figure>
+      <div class="diagram-card">
+        <svg viewBox="0 0 720 300" role="img" aria-label="React frontend on port 5173 sends requests to the FastAPI backend on port 8000, which in turn calls the Config Server on port 8001 for settings, queries a local ChromaDB store, calls MCP tools on the MCP Server on port 8002, and calls the OpenAI chat model.">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+
+          <!-- Frontend -->
+          <rect x="20" y="20" width="200" height="56" rx="7" fill="none" stroke="currentColor"/>
+          <text x="120" y="44" text-anchor="middle" class="node-label" font-size="13">React Frontend</text>
+          <text x="120" y="62" text-anchor="middle" class="node-sub" font-size="11">:5173</text>
+
+          <!-- Backend -->
+          <rect x="260" y="20" width="200" height="56" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="360" y="44" text-anchor="middle" class="node-label" font-size="13">FastAPI Backend</text>
+          <text x="360" y="62" text-anchor="middle" class="node-sub" font-size="11">:8000</text>
+
+          <line x1="220" y1="48" x2="256" y2="48" stroke="currentColor" marker-end="url(#arrow)"/>
+          <text x="238" y="38" text-anchor="middle" font-size="10" fill="currentColor">fetch</text>
+
+          <!-- three downstream boxes -->
+          <rect x="30" y="140" width="190" height="60" rx="7" fill="none" stroke="currentColor"/>
+          <text x="125" y="164" text-anchor="middle" class="node-label" font-size="12.5">Config Server</text>
+          <text x="125" y="180" text-anchor="middle" class="node-sub" font-size="10.5">:8001 · LLM/RAG/MCP settings</text>
+
+          <rect x="265" y="140" width="190" height="60" rx="7" fill="none" stroke="currentColor"/>
+          <text x="360" y="160" text-anchor="middle" class="node-label" font-size="12.5">ChromaDB</text>
+          <text x="360" y="176" text-anchor="middle" class="node-sub" font-size="10.5">local · best-practice</text>
+          <text x="360" y="190" text-anchor="middle" class="node-sub" font-size="10.5">embeddings</text>
+
+          <rect x="500" y="140" width="190" height="60" rx="7" fill="none" stroke="currentColor"/>
+          <text x="595" y="164" text-anchor="middle" class="node-label" font-size="12.5">MCP Server</text>
+          <text x="595" y="180" text-anchor="middle" class="node-sub" font-size="10.5">:8002 · deterministic checks</text>
+
+          <!-- arrows down from backend to each -->
+          <line x1="330" y1="76" x2="150" y2="136" stroke="currentColor" marker-end="url(#arrow)"/>
+          <text x="205" y="108" text-anchor="middle" font-size="10" fill="currentColor">GET /config/application</text>
+
+          <line x1="360" y1="76" x2="360" y2="136" stroke="currentColor" marker-end="url(#arrow)"/>
+          <text x="393" y="108" text-anchor="middle" font-size="10" fill="currentColor">similarity search</text>
+
+          <line x1="400" y1="76" x2="565" y2="136" stroke="currentColor" marker-end="url(#arrow)"/>
+          <text x="530" y="108" text-anchor="middle" font-size="10" fill="currentColor">code_metadata / code_analysis</text>
+
+          <!-- OpenAI -->
+          <rect x="260" y="238" width="200" height="52" rx="7" class="accent-fill"/>
+          <text x="360" y="260" text-anchor="middle" class="accent-text" font-size="12.5">OpenAI · gpt-4o-mini</text>
+          <text x="360" y="276" text-anchor="middle" font-size="10.5" fill="var(--accent-ink)">structured chat completion</text>
+
+          <line x1="360" y1="76" x2="360" y2="234" class="accent-stroke" stroke-width="1.6" marker-end="url(#arrow)"/>
+          <text x="450" y="160" text-anchor="middle" font-size="10" fill="var(--accent)">review_code()</text>
+        </svg>
+      </div>
+      <figcaption>Fig. 1 — The backend is the single hub: every review calls out to the Config Server, ChromaDB, the MCP Server, and finally OpenAI, in that order.</figcaption>
+    </figure>
+
+    <div class="service-grid">
+      <div class="service-card"><span class="port">:8001</span><span class="name">Config Server</span><span class="desc">Single source of truth for LLM / RAG / MCP settings. Never returns the real API key.</span></div>
+      <div class="service-card"><span class="port">:8002</span><span class="name">MCP Server</span><span class="desc">Exposes <code>code_metadata</code> and <code>code_analysis</code> — deterministic, non-LLM checks.</span></div>
+      <div class="service-card"><span class="port">:8000</span><span class="name">Backend</span><span class="desc">FastAPI + LangGraph. Orchestrates the review, holds uploads and results in memory.</span></div>
+      <div class="service-card"><span class="port">:5173</span><span class="name">Frontend</span><span class="desc">React + Vite. Upload files, or a repo URL, then read the result.</span></div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ SECTION: TWO ENTRY POINTS ============ -->
+  <section>
+    <div class="section-head"><h2>Two ways in, one pipeline</h2></div>
+    <p class="section-dek">Uploading files and submitting a repo URL are different on the way in, and identical from here on — the diagram below is the proof, not just the claim.</p>
+
+    <figure>
+      <div class="diagram-card">
+        <svg viewBox="0 0 680 260" role="img" aria-label="Both uploading files directly and submitting a GitHub or Bitbucket URL result in files staged under the same uploads directory, which then feeds one identical LangGraph review pipeline.">
+          <defs>
+            <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+            <marker id="arrow2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+
+          <rect x="30" y="20" width="260" height="56" rx="7" fill="none" stroke="currentColor"/>
+          <text x="160" y="44" text-anchor="middle" class="node-label" font-size="13">Upload Files</text>
+          <text x="160" y="62" text-anchor="middle" class="node-sub" font-size="10.5">POST /api/files/upload</text>
+
+          <rect x="390" y="20" width="260" height="56" rx="7" fill="none" stroke="currentColor"/>
+          <text x="520" y="44" text-anchor="middle" class="node-label" font-size="13">Repository URL</text>
+          <text x="520" y="62" text-anchor="middle" class="node-sub" font-size="10.5">POST /api/files/from-url</text>
+
+          <rect x="190" y="128" width="300" height="56" rx="7" class="accent-fill"/>
+          <text x="340" y="152" text-anchor="middle" class="accent-text" font-size="12.5">uploads/{upload_id}/</text>
+          <text x="340" y="168" text-anchor="middle" font-size="10.5" fill="var(--accent-ink)">{ upload_id, files }</text>
+
+          <line x1="180" y1="76" x2="270" y2="126" class="accent-stroke" marker-end="url(#arrow2a)"/>
+          <line x1="500" y1="76" x2="410" y2="126" class="accent-stroke" marker-end="url(#arrow2a)"/>
+
+          <rect x="140" y="212" width="400" height="40" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="340" y="237" text-anchor="middle" class="node-label" font-size="12.5">LangGraph review pipeline</text>
+
+          <line x1="340" y1="184" x2="340" y2="208" stroke="currentColor" marker-end="url(#arrow2)"/>
+        </svg>
+      </div>
+      <figcaption>Fig. 2 — <code>fetch_repo_files()</code> stages a cloned repo's source files under the same <code>upload_id</code> shape <code>save_uploaded_files()</code> produces, so <code>run_review()</code> never needs to know which path the files came from.</figcaption>
+    </figure>
+
+    <div class="callout">
+      <p><strong>Guardrails on the repo-URL path:</strong> host allowlist (<code>github.com</code> / <code>bitbucket.org</code> only), <code>http(s)</code>-only, no embedded credentials, <code>git clone --depth 1</code> via an argument list (never a shell string), a clone timeout, and a per-file size cap plus a 30-file ceiling so one giant repo can't blow out the review or the LLM prompt.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ SECTION: SETUP ============ -->
+  <section>
+    <div class="section-head"><span class="step-tag">STEP 01</span><h2>Environment setup</h2></div>
+    <p class="section-dek">Four services, four virtual environments. Each gets its own <code>.env</code> copied from its <code>.env.example</code>.</p>
+
+    <div class="console">
+      <div class="console-bar"><span></span><span></span><span></span><span class="label">setup.sh</span></div>
+      <pre><code><span class="c-cmd">cd config-server && python -m venv .venv && ./.venv/bin/pip install -r requirements.txt</span>
+<span class="c-cmd">cd ../mcp-server    && python -m venv .venv && ./.venv/bin/pip install -r requirements.txt</span>
+<span class="c-cmd">cd ../backend       && python -m venv .venv && ./.venv/bin/pip install -r requirements.txt</span>
+<span class="c-cmd">cd ../frontend      && npm install</span>
+
+<span class="c-comment"># each service: cp .env.example .env, then fill in OPENAI_API_KEY</span></code></pre>
+    </div>
+
+    <div class="callout">
+      <p><strong>What actually happened on this run (Windows, Python 3.14 pre-installed):</strong> the pinned <code>numpy</code>/<code>pydantic-core</code>/<code>chroma-hnswlib</code> versions ship no prebuilt wheel for 3.14, and the box had no C++ toolchain. Fix, in order: installed <strong>Python 3.12</strong> side-by-side via <code>winget</code>, rebuilt every venv against it, then installed <strong>VS Build Tools</strong> (C++ workload) to compile <code>chroma-hnswlib</code> from source — the one native dependency with no Windows wheel at any version. No <code>requirements.txt</code> pin was changed.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ SECTION: LAUNCH ============ -->
+  <section>
+    <div class="section-head"><span class="step-tag">STEP 02</span><h2>Launch sequence</h2></div>
+    <p class="section-dek">Order matters a little: Config Server and MCP Server should be up before the first <code>/api/review</code> call, since that's when the backend reaches out to both.</p>
+
+    <div class="console">
+      <div class="console-bar"><span></span><span></span><span></span><span class="label">4 terminals</span></div>
+      <pre><code><span class="c-comment"># 1 — Config Server</span>
+<span class="c-cmd">cd config-server && ./.venv/bin/uvicorn app.main:app --port 8001</span>
+
+<span class="c-comment"># 2 — MCP Server</span>
+<span class="c-cmd">cd mcp-server && ./.venv/bin/python server.py</span>
+
+<span class="c-comment"># 3 — Backend (ingest once, then serve)</span>
+<span class="c-cmd">cd backend && ./.venv/bin/python -m app.rag.ingest</span>
+<span class="c-cmd">cd backend && ./.venv/bin/uvicorn app.main:app --port 8000</span>
+
+<span class="c-comment"># 4 — Frontend</span>
+<span class="c-cmd">cd frontend && npm run dev</span></code></pre>
+    </div>
+
+    <div class="console">
+      <div class="console-bar"><span></span><span></span><span></span><span class="label">observed output</span></div>
+      <pre><code><span class="c-out">Ingested 4 documents -> 18 chunks into ChromaDB.
+
+INFO:     Uvicorn running on http://127.0.0.1:8001 (config-server)
+INFO:     Uvicorn running on http://0.0.0.0:8002    (mcp-server)
+INFO:     Uvicorn running on http://127.0.0.1:8000 (backend)
+
+  VITE v5.4.21  ready in 2173 ms
+  ➜  Local:   http://localhost:5173/</span></code></pre>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ SECTION: TRACE 1 ============ -->
+  <section>
+    <div class="section-head"><span class="step-tag">STEP 03</span><h2>Trace — reviewing an uploaded file</h2></div>
+    <p class="section-dek">A deliberately buggy two-function file, pushed through the real API — no mocking.</p>
+
+    <div class="console">
+      <div class="console-bar"><span></span><span></span><span></span><span class="label">sample.py</span></div>
+      <pre><code><span class="c-out">def add(a, b):
+    return a+b
+
+def divide(a, b):
+    return a / b  <span class="c-comment"># no zero check</span></span></code></pre>
+    </div>
+
+    <div class="console">
+      <div class="console-bar"><span></span><span></span><span></span><span class="label">curl</span></div>
+      <pre><code><span class="c-cmd">curl -X POST :8000/api/files/upload -F "files=@sample.py"</span>
+<span class="c-out">{"upload_id":"b7017a51-...","files":["sample.py"]}</span>
+
+<span class="c-cmd">curl -X POST :8000/api/review -d '{"upload_id":"b7017a51-...","file_names":["sample.py"],"review_focus":"general"}'</span></code></pre>
+    </div>
+
+    <h3>What the graph did, node by node</h3>
+    <ul class="trace-list">
+      <li><span class="trace-num">1</span><div><strong>validate_code</strong><span> — confirmed <code>.py</code> is a supported extension.</span></div></li>
+      <li><span class="trace-num">2</span><div><strong>retrieve_context</strong><span> — similarity search over the 18 ingested chunks. Result: <code>rag_context_used: true</code>.</span></div></li>
+      <li><span class="trace-num">3</span><div><strong>run_mcp_tools</strong><span> — called both MCP tools over streamable-HTTP. Result: <code>mcp_tools_used: ["code_metadata", "code_analysis"]</code>.</span></div></li>
+      <li><span class="trace-num">4</span><div><strong>review_code</strong><span> — <code>ChatOpenAI(gpt-4o-mini)</code> with <code>with_structured_output(ReviewResult)</code>, prompted with the code + RAG context + MCP results.</span></div></li>
+      <li><span class="trace-num">5</span><div><strong>format_response</strong><span> — attached the RAG/MCP flags, assigned a <code>review_id</code>.</span></div></li>
+    </ul>
+
+    <h3>Actual response</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sev</th><th>Category</th><th>Line</th><th>Finding</th></tr></thead>
+        <tbody>
+          <tr><td><span class="chip sev-high">high</span></td><td class="mono-cell">bug</td><td class="mono-cell">6</td><td>Division by zero is not handled.</td></tr>
+          <tr><td><span class="chip sev-medium">medium</span></td><td class="mono-cell">quality</td><td class="mono-cell">2</td><td>No spacing around the <code>+</code> operator.</td></tr>
+          <tr><td><span class="chip sev-medium">medium</span></td><td class="mono-cell">quality</td><td class="mono-cell">6</td><td>No spacing around the <code>/</code> operator.</td></tr>
+          <tr><td><span class="chip sev-medium">medium</span></td><td class="mono-cell">best_practice</td><td class="mono-cell">1</td><td>Function names should be more descriptive.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="section-dek" style="margin-top:-8px">Score <strong style="color:var(--ink)">60 / 100</strong> · the planted divide-by-zero bug was caught on the first pass, unprompted.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ SECTION: TRACE 2 ============ -->
+  <section>
+    <div class="section-head"><span class="step-tag">STEP 04</span><h2>Trace — reviewing a GitHub repository</h2></div>
+    <p class="section-dek">Same endpoint family, different source. Cloned <code>psf/requests</code> as a live test of the size cap and the guardrails.</p>
+
+    <div class="console">
+      <div class="console-bar"><span></span><span></span><span></span><span class="label">python</span></div>
+      <pre><code><span class="c-cmd">fetch_repo_files("https://github.com/psf/requests")</span>
+<span class="c-out">upload_id: 1a2e057c-...
+truncated: True
+num files: 30
+ - docs/_themes/flask_theme_support.py
+ - docs/conf.py
+ - setup.py
+ - src/requests/__init__.py
+ - src/requests/__version__.py
+ - src/requests/adapters.py
+ - src/requests/auth.py
+ ...</span></code></pre>
+    </div>
+
+    <h3>Guardrails, exercised for real</h3>
+    <div class="console">
+      <div class="console-bar"><span></span><span></span><span></span><span class="label">rejected inputs</span></div>
+      <pre><code><span class="c-cmd">ftp://github.com/psf/requests</span>
+<span class="c-out">-> Only http:// or https:// repository URLs are supported.</span>
+
+<span class="c-cmd">https://evil.example.com/psf/requests</span>
+<span class="c-out">-> Unsupported host 'evil.example.com'. Only GitHub and Bitbucket URLs are supported.</span>
+
+<span class="c-cmd">https://user:pass@github.com/psf/requests</span>
+<span class="c-out">-> Repository URLs with embedded credentials are not supported.</span>
+
+<span class="c-cmd">https://github.com/this-user-does-not-exist-xyz/this-repo-does-not-exist-abc</span>
+<span class="c-out">-> Could not clone repository: fatal: repository not found</span></code></pre>
+    </div>
+    <p class="section-dek">Every rejection happens <em>before</em> a clone is attempted — the URL is validated first, so a bad host or scheme never reaches <code>git</code>.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ SECTION: SHUTDOWN ============ -->
+  <section>
+    <div class="section-head"><span class="step-tag">STEP 05</span><h2>Shutting down</h2></div>
+    <p class="section-dek">Find each service by the port it's bound to, then stop that process specifically — not a broad kill of every <code>python</code>/<code>node</code> on the box.</p>
+
+    <div class="console">
+      <div class="console-bar"><span></span><span></span><span></span><span class="label">windows</span></div>
+      <pre><code><span class="c-cmd">netstat -ano | findstr ":8000 :8001 :8002 :5173"</span>
+<span class="c-out">  TCP  127.0.0.1:8000  LISTENING  15024
+  TCP  127.0.0.1:8001  LISTENING  17384
+  TCP  0.0.0.0:8002    LISTENING  7408
+  TCP  [::1]:5173      LISTENING  17040</span>
+
+<span class="c-cmd">taskkill /PID 15024 /F && taskkill /PID 17384 /F && taskkill /PID 7408 /F && taskkill /PID 17040 /F</span>
+<span class="c-out">SUCCESS: all four processes terminated.</span></code></pre>
+    </div>
+  </section>
+
+  <footer>
+    Traced from a real run of this build. Curl output, clone results, and the review JSON above are unedited (upload IDs shortened for space) — nothing on this page was staged for the screenshot, because there isn't one.
+  </footer>
+
+</div>
