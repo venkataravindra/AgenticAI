@@ -1,0 +1,921 @@
+/* ============================================================
+   GLOBAL
+============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+
+    font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f5f7fb;
+
+    color: #1f2937;
+}
+
+
+/* ============================================================
+   APP
+============================================================ */
+
+.app {
+
+    min-height: 100vh;
+
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #1f2937
+        );
+
+    color: white;
+
+    padding: 20px 6%;
+
+}
+
+
+.header-content {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+}
+
+
+.logo-section {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.logo {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 12px;
+
+    background: #f57c00;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+}
+
+
+.logo-section h1 {
+
+    margin: 0;
+
+    font-size: 20px;
+
+}
+
+
+.logo-section p {
+
+    margin: 3px 0 0;
+
+    color: #d1d5db;
+
+    font-size: 12px;
+
+}
+
+
+.header-title {
+
+    text-align: right;
+
+}
+
+
+.header-title h2 {
+
+    margin: 0;
+
+    font-size: 22px;
+
+}
+
+
+.header-title span {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #d1d5db;
+
+    font-size: 13px;
+
+}
+
+
+/* ============================================================
+   MAIN
+============================================================ */
+
+.main-container {
+
+    width: 92%;
+
+    max-width: 1000px;
+
+    margin: 35px auto;
+
+}
+
+
+/* ============================================================
+   CARD
+============================================================ */
+
+.card {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 28px;
+
+    margin-bottom: 24px;
+
+    border: 1px solid #e5e7eb;
+
+    box-shadow:
+        0 6px 20px
+        rgba(0, 0, 0, 0.05);
+
+}
+
+
+/* ============================================================
+   SECTION TITLE
+============================================================ */
+
+.section-title {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 15px;
+
+    margin-bottom: 22px;
+
+}
+
+
+.section-title h2 {
+
+    margin: 0;
+
+    font-size: 20px;
+
+}
+
+
+.section-title p {
+
+    margin: 6px 0 0;
+
+    color: #6b7280;
+
+    line-height: 1.5;
+
+}
+
+
+.step-number {
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: #fff3e8;
+
+    color: #f57c00;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: bold;
+
+}
+
+
+/* ============================================================
+   UPLOAD
+============================================================ */
+
+.upload-box {
+
+    border: 2px dashed #d1d5db;
+
+    border-radius: 12px;
+
+    padding: 35px;
+
+    text-align: center;
+
+}
+
+
+.upload-icon {
+
+    font-size: 45px;
+
+    margin-bottom: 15px;
+
+}
+
+
+input[type="file"] {
+
+    display: none;
+
+}
+
+
+.file-label {
+
+    display: inline-block;
+
+    padding: 11px 20px;
+
+    border-radius: 8px;
+
+    background: #f3f4f6;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+}
+
+
+.file-label:hover {
+
+    background: #e5e7eb;
+
+}
+
+
+.selected-file {
+
+    margin: 18px auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+}
+
+
+/* ============================================================
+   BUTTON
+============================================================ */
+
+.primary-button {
+
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 12px 22px;
+
+    background: #f57c00;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.primary-button:hover {
+
+    background: #e56f00;
+
+}
+
+
+.primary-button:disabled {
+
+    background: #bdbdbd;
+
+    cursor: not-allowed;
+
+}
+
+
+/* ============================================================
+   SUCCESS
+============================================================ */
+
+.success-message {
+
+    margin-top: 20px;
+
+    padding: 14px;
+
+    border-radius: 8px;
+
+    background: #ecfdf5;
+
+    color: #166534;
+
+}
+
+
+/* ============================================================
+   ERROR
+============================================================ */
+
+.error-message {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    background: #fef2f2;
+
+    color: #b91c1c;
+
+    border: 1px solid #fecaca;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* ============================================================
+   QUESTION
+============================================================ */
+
+.question-form textarea {
+
+    width: 100%;
+
+    resize: vertical;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    padding: 16px;
+
+    font-size: 16px;
+
+    line-height: 1.6;
+
+    font-family: inherit;
+
+}
+
+
+.question-form textarea:focus {
+
+    outline: none;
+
+    border-color: #f57c00;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(245, 124, 0, 0.1);
+
+}
+
+
+.question-footer {
+
+    margin-top: 15px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+
+.question-footer span {
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+}
+
+
+/* ============================================================
+   PROCESSING
+============================================================ */
+
+.processing-flow {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+.process-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 15px;
+
+    background: #f8fafc;
+
+    border-radius: 10px;
+
+}
+
+
+.process-item strong {
+
+    display: block;
+
+}
+
+
+.process-item p {
+
+    margin: 4px 0 0;
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+}
+
+
+.process-icon {
+
+    width: 45px;
+
+    height: 45px;
+
+    border-radius: 10px;
+
+    background: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+}
+
+
+.process-arrow {
+
+    text-align: center;
+
+    padding: 5px;
+
+    color: #f57c00;
+
+    font-weight: bold;
+
+}
+
+
+/* ============================================================
+   STATISTICS
+============================================================ */
+
+.statistics {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+
+    margin-top: 20px;
+
+}
+
+
+.stat {
+
+    padding: 18px;
+
+    border-radius: 10px;
+
+    background: #fff7ed;
+
+    text-align: center;
+
+}
+
+
+.stat strong {
+
+    display: block;
+
+    font-size: 28px;
+
+    color: #f57c00;
+
+}
+
+
+.stat span {
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+}
+
+
+/* ============================================================
+   ANSWER
+============================================================ */
+
+.answer-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.answer-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 12px;
+
+    background: #eef2ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 25px;
+
+}
+
+
+.answer-header h2 {
+
+    margin: 0;
+
+}
+
+
+.answer-header p {
+
+    margin: 4px 0 0;
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+}
+
+
+.answer-content {
+
+    background: #f8fafc;
+
+    border-radius: 12px;
+
+    padding: 22px;
+
+    line-height: 1.8;
+
+    white-space: pre-wrap;
+
+}
+
+
+/* ============================================================
+   SOURCES
+============================================================ */
+
+.source-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+}
+
+
+.sources-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+}
+
+
+.source-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 15px;
+
+    background: #f8fafc;
+
+    border-radius: 10px;
+
+}
+
+
+.source-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.pdf-icon {
+
+    font-size: 22px;
+
+}
+
+
+.source-info strong {
+
+    display: block;
+
+}
+
+
+.source-info span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+.score {
+
+    text-align: right;
+
+}
+
+
+.score span {
+
+    display: block;
+
+    color: #6b7280;
+
+    font-size: 11px;
+
+}
+
+
+.score strong {
+
+    color: #f57c00;
+
+}
+
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
+.footer {
+
+    text-align: center;
+
+    padding: 35px;
+
+    background: #111827;
+
+    color: white;
+
+}
+
+
+.footer p {
+
+    margin: 5px 0;
+
+    color: #9ca3af;
+
+}
+
+
+.technology-list {
+
+    margin-top: 15px;
+
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+}
+
+
+.technology-list span {
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    background: #374151;
+
+    font-size: 12px;
+
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 700px) {
+
+    .header-content {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .header-title {
+
+        text-align: left;
+
+    }
+
+
+    .card {
+
+        padding: 20px;
+
+    }
+
+
+    .upload-box {
+
+        padding: 25px 15px;
+
+    }
+
+
+    .question-footer {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 12px;
+
+    }
+
+
+    .question-footer .primary-button {
+
+        width: 100%;
+
+    }
+
+
+    .statistics {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .source-item {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .score {
+
+        text-align: left;
+
+    }
+
+}

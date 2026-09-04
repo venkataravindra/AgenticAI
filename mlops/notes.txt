@@ -1,0 +1,80 @@
+1) step 1.
+        create .gitignore file
+
+2) step 2.
+        push code to github 
+
+        git init
+        git config --global user.name "samba"
+        git config --global user.email "samba.pendela@gmail.com"
+        git add .
+        git commit -m "code"
+        git remote add origin https://github.com/toolsknowledge/mlops.git
+        git branch
+        1) main                             master
+        git push -u origin main             git branch main
+                                            git checkout main
+                                            git push -u origin main
+
+
+3) update Jenkinsfile   
+            URL : https://github.com/toolsknowledge/mlops.git
+        git add .
+        git commit -m "code"
+        git push
+
+4) create EC2
+        (Virtual Computer)
+
+        name : mlops
+
+        *********************
+        - t2.medium (RAM)
+        - >=20GB HDD
+        *********************
+
+        *********************
+            8080 (Jenkins)
+            5001 (Flask)
+            80 (Docker)
+        **********************
+
+        *********************
+            
+        1) python
+            sudo apt update
+            sudo apt install -y python3 python3-pip python3-venv
+
+            https://www.jenkins.io/doc/book/installing/
+        2) java
+        3) jenkins  
+        4) docker       
+                sudo apt install docker.io -y
+        *********************
+
+        ***************************
+        enable required permission
+                    sudo usermod -aG docker jenkins
+                    sudo usermod -aG docker ubuntu
+                    sudo usermod -aG jenkins ubuntu
+        ***************************
+
+        ******************************
+        restart 
+            jenkins
+            docker
+                sudo systemctl restart jenkins
+                sudo systemctl restart docker
+        *********************************
+
+        ************************************
+        jenkins password
+            sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+                6fc1e762ade94007bcb42f2d7985aad7
+        **************************************
+
+5) run pipeline
+        http://3.108.58.187:8080/
+
+ 

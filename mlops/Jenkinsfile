@@ -1,0 +1,71 @@
+pipeline {
+
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+
+                checkout scm
+            }
+        }
+
+
+        stage('Test Application') {
+            steps {
+                echo 'Testing Python application...'
+
+                sh '''
+                    python3 --version
+                    python3 -c "import ast; ast.parse(open('app.py').read()); print('Python syntax OK')"
+                '''
+            }
+        }
+
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+
+                sh '''
+                    docker build -t linear-regression-ml:latest .
+                '''
+            }
+        }
+
+
+        stage('Run Docker Container') {
+            steps {
+                echo 'Starting Docker container...'
+
+                sh '''
+                    docker stop linear-regression-ml || true
+                    docker rm linear-regression-ml || true
+
+                    docker run -d \
+                        --name linear-regression-ml \
+                        -p 5001:5001 \
+                        linear-regression-ml:latest
+                '''
+            }
+        }
+    }
+
+
+    post {
+
+        success {
+            echo '================================='
+            echo 'ML APPLICATION DEPLOYED SUCCESSFULLY'
+            echo '================================='
+        }
+
+        failure {
+            echo '================================='
+            echo 'PIPELINE FAILED'
+            echo '================================='
+        }
+    }
+}

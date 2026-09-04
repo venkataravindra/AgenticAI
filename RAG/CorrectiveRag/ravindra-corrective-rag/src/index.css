@@ -1,0 +1,65 @@
+:root {
+  --bg: #0d1826;
+  --bg-deep: #08111c;
+  --surface: #142236;
+  --surface-raised: #1a2c44;
+  --border: #24384f;
+  --text: #eaf1f7;
+  --muted: #85a0bb;
+  --muted-dim: #5b7188;
+  --accent: #4fd8c4;
+  --accent-dim: #2f8c7e;
+  --correction: #f5a623;
+  --correction-dim: #7a5518;
+  --danger: #ef6a6a;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(79, 216, 196, 0.08), transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(245, 166, 35, 0.06), transparent 40%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--accent-dim);
+  color: var(--text);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
