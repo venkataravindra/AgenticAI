@@ -14,7 +14,7 @@ df = pd.DataFrame(data)
 X = df[["Weather","Temperatures"]]
 y = df["Play"]
 model = DecisionTreeClassifier()
-model.fit(X,y)
+model.fit(X,y)      # 0.445
 plt.scatter(df["Weather"],df["Play"],color="green")
 # plt.show()
 class Game(BaseModel):
