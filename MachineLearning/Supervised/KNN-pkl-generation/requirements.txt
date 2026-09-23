@@ -1,0 +1,4 @@
+numpy           # list operations
+scikit-learn    # machine learning library
+joblib          # pkl files (model)
+streamlit       # presentation layer
